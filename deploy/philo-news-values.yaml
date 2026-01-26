@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  name: ""
+
+containerPort: 8000
+
+env:
+  - name: DATABASE_PATH
+    value: /data/db.sqlite3
+
+persistence:
+  enabled: true
+  mountPath: /data
+  size: 1Gi

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,12 @@ SECRET_KEY = 'django-insecure-hin0mr+7o1^5+d7ay+hk4&e8_gpm+s@@=g+i@6ceig1q_hc8*2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['witham.nomai.internal', '127.0.0.1', 'localhost', '100.64.0.5']
+default_allowed_hosts = ['witham.nomai.internal', '127.0.0.1', 'localhost', '100.64.0.5']
+env_allowed_hosts = os.environ.get('ALLOWED_HOSTS')
+if env_allowed_hosts:
+    ALLOWED_HOSTS = [host.strip() for host in env_allowed_hosts.split(',') if host.strip()]
+else:
+    ALLOWED_HOSTS = default_allowed_hosts
 
 
 # Application definition
@@ -73,10 +79,11 @@ WSGI_APPLICATION = 'philonet.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+DATABASE_PATH = os.environ.get('DATABASE_PATH', str(BASE_DIR / 'db.sqlite3'))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DATABASE_PATH,
     }
 }
 
