@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-hin0mr+7o1^5+d7ay+hk4&e8_gpm+s@@=g+i@6ceig1q_hc8*2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['witham.nomai.internal', '127.0.0.1', 'localhost']
 
 
 # Application definition
