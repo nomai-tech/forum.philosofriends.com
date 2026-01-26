@@ -1,9 +1,9 @@
 :root {
-    --hn-orange: #2b3a67;
-    --hn-bg: #f3f1ed;
-    --hn-text: #1f2430;
-    --hn-muted: #6c7282;
-    --hn-border: #d7d4ce;
+    --hn-orange: #1f7a8c;
+    --hn-bg: #f8fbff;
+    --hn-text: #1b2a3a;
+    --hn-muted: #5c6f82;
+    --hn-border: #dbe4ee;
 }
 
 * {
