@@ -16,8 +16,9 @@ env:
     value: https://forum.philosofriends.com,http://forum.philosofriends.com
 
 command:
-  - uvicorn
+  - /app/entrypoint.sh
 args:
+  - uvicorn
   - philonet.asgi:application
   - --host
   - 0.0.0.0
