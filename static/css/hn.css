@@ -61,6 +61,10 @@ a:hover {
     font-weight: bold;
 }
 
+.hn-submit {
+    font-size: 12px;
+}
+
 .hn-nav {
     margin-left: auto;
     font-size: 12px;
