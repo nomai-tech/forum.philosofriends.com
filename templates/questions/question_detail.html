@@ -2,6 +2,21 @@
 
 {% block title %}{{ question.title }} · Philosofriends{% endblock %}
 
+{% block meta %}
+    {% if question.body %}
+        <meta name="description" content="{{ question.body|striptags|truncatewords:24 }}">
+    {% else %}
+        <meta name="description" content="{{ question.title|striptags }}">
+    {% endif %}
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ question.title|striptags }}">
+    <meta property="og:description" content="{% if question.body %}{{ question.body|striptags|truncatewords:24 }}{% else %}{{ question.title|striptags }}{% endif %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ question.title|striptags }}">
+    <meta name="twitter:description" content="{% if question.body %}{{ question.body|striptags|truncatewords:24 }}{% else %}{{ question.title|striptags }}{% endif %}">
+{% endblock %}
+
 {% block content %}
     <article class="hn-article">
         <h1>{{ question.title }}</h1>
