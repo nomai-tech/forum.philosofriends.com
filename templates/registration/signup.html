@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Signup · Philo News{% endblock %}
+
+{% block content %}
+    <section class="hn-form">
+        <h1>Create an account</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="hn-field">
+                <label for="id_username">Username</label>
+                {{ form.username }}
+            </div>
+            <div class="hn-field">
+                <label for="id_password1">Password</label>
+                {{ form.password1 }}
+            </div>
+            <div class="hn-field">
+                <label for="id_password2">Confirm</label>
+                {{ form.password2 }}
+            </div>
+            <button class="hn-button" type="submit">Signup</button>
+        </form>
+    </section>
+{% endblock %}

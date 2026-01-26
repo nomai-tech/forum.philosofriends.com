@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Submit · Philo News{% endblock %}
+
+{% block content %}
+    <section class="hn-form">
+        <h1>Submit a question</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="hn-field">
+                <label for="id_title">Question</label>
+                {{ form.title }}
+            </div>
+            <div class="hn-field">
+                <label for="id_body">Context</label>
+                {{ form.body }}
+            </div>
+            <button class="hn-button" type="submit">Submit</button>
+        </form>
+    </section>
+{% endblock %}

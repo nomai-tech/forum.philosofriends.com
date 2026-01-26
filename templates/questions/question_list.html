@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Philo News{% endblock %}
+
+{% block content %}
+    <ol class="hn-list">
+        {% for question in questions %}
+            <li class="hn-item">
+                <div class="hn-item-title">
+                    <a href="{% url 'question_detail' question.pk %}">{{ question.title }}</a>
+                </div>
+                <div class="hn-item-meta">
+                    asked by {{ question.author.username }} · {{ question.created_at|date:"M j, Y" }}
+                </div>
+            </li>
+        {% empty %}
+            <li class="hn-empty">No questions yet. Be the first to ask.</li>
+        {% endfor %}
+    </ol>
+{% endblock %}

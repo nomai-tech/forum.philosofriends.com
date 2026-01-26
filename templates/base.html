@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Philo News{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/hn.css">
+</head>
+<body>
+    <header class="hn-header">
+        <div class="hn-bar">
+            <a class="hn-logo" href="/">Φ</a>
+            <div class="hn-title">
+                <a href="/">Philo News</a>
+            </div>
+            <nav class="hn-nav">
+                <a href="/submit/">submit</a>
+                <span class="hn-sep">|</span>
+                {% if user.is_authenticated %}
+                    <span class="hn-user">{{ user.username }}</span>
+                    <span class="hn-sep">|</span>
+                    <a href="/accounts/logout/">logout</a>
+                {% else %}
+                    <a href="/accounts/login/">login</a>
+                    <span class="hn-sep">|</span>
+                    <a href="/signup/">signup</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="hn-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="hn-footer">
+        <div>Philo News is a place for short, sincere questions about meaning, mind, and ethics.</div>
+    </footer>
+</body>
+</html>
