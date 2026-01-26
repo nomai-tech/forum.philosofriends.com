@@ -160,6 +160,13 @@ a:hover {
     padding: 10px 0;
 }
 
+.hn-comment-children {
+    list-style: none;
+    padding-left: 16px;
+    margin: 10px 0 0;
+    border-left: 1px solid var(--hn-border);
+}
+
 .hn-comment-meta {
     font-size: 11px;
     color: var(--hn-muted);

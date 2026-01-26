@@ -16,8 +16,24 @@ def question_detail(request, pk):
         Question.objects.select_related('author').prefetch_related('comments__author'),
         pk=pk,
     )
-    comments = question.comments.all().order_by('created_at')
-    return render(request, 'questions/question_detail.html', {'question': question, 'comments': comments})
+    comments = list(question.comments.select_related('author').order_by('created_at'))
+    comment_map = {}
+    for comment in comments:
+        comment_map.setdefault(comment.parent_id, []).append(comment)
+
+    def build_comment_tree(parent_id=None):
+        nodes = []
+        for comment in comment_map.get(parent_id, []):
+            comment.children = build_comment_tree(comment.id)
+            nodes.append(comment)
+        return nodes
+
+    comment_tree = build_comment_tree()
+    return render(
+        request,
+        'questions/question_detail.html',
+        {'question': question, 'comments': comment_tree},
+    )
 
 
 @login_required

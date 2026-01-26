@@ -13,6 +13,7 @@ class Question(models.Model):
 
 class Comment(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='comments')
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, related_name='replies', null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

@@ -12,6 +12,6 @@ class QuestionAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('question', 'author', 'created_at')
+    list_display = ('question', 'author', 'parent', 'created_at')
     search_fields = ('body', 'author__username', 'question__title')
     ordering = ('-created_at',)

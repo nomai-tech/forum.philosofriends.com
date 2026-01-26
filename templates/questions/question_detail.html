@@ -20,10 +20,7 @@
         {% if comments %}
             <ul class="hn-comment-list">
                 {% for comment in comments %}
-                    <li class="hn-comment">
-                        <div class="hn-comment-meta">{{ comment.author.username }} · {{ comment.created_at|date:"M j, Y" }}</div>
-                        <div class="hn-comment-body">{{ comment.body|linebreaksbr }}</div>
-                    </li>
+                    {% include "questions/_comment.html" with comment=comment %}
                 {% endfor %}
             </ul>
         {% else %}

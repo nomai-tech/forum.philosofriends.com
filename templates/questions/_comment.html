@@ -1,0 +1,11 @@
+<li class="hn-comment">
+    <div class="hn-comment-meta">{{ comment.author.username }} · {{ comment.created_at|date:"M j, Y" }}</div>
+    <div class="hn-comment-body">{{ comment.body|linebreaksbr }}</div>
+    {% if comment.children %}
+        <ul class="hn-comment-children">
+            {% for child in comment.children %}
+                {% include "questions/_comment.html" with comment=child %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>
