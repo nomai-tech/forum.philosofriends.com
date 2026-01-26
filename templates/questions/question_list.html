@@ -10,7 +10,7 @@
                     <a href="{% url 'question_detail' question.pk %}">{{ question.title }}</a>
                 </div>
                 <div class="hn-item-meta">
-                    asked by {{ question.author.username }} · {{ question.created_at|date:"M j, Y" }} · {{ question.comments.count }} comments
+                    asked by {{ question.author.username }} · {{ question.created_at|date:"M j, Y" }} · <a href="{% url 'question_detail' question.pk %}">{{ question.comments.count }} comments</a>
                 </div>
             </li>
         {% empty %}
