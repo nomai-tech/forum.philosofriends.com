@@ -7,13 +7,17 @@ from .models import Question
 
 
 def question_list(request):
-    questions = Question.objects.select_related('author').order_by('-created_at')
+    questions = Question.objects.select_related('author').prefetch_related('comments').order_by('-created_at')
     return render(request, 'questions/question_list.html', {'questions': questions})
 
 
 def question_detail(request, pk):
-    question = get_object_or_404(Question, pk=pk)
-    return render(request, 'questions/question_detail.html', {'question': question})
+    question = get_object_or_404(
+        Question.objects.select_related('author').prefetch_related('comments__author'),
+        pk=pk,
+    )
+    comments = question.comments.all().order_by('created_at')
+    return render(request, 'questions/question_detail.html', {'question': question, 'comments': comments})
 
 
 @login_required

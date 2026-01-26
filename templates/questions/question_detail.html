@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ question.title }} · Philo News{% endblock %}
+{% block title %}{{ question.title }} · Philosofriends{% endblock %}
 
 {% block content %}
     <article class="hn-article">
@@ -14,4 +14,20 @@
             <p class="hn-body hn-muted">No additional context.</p>
         {% endif %}
     </article>
+
+    <section class="hn-comments">
+        <h2>Comments</h2>
+        {% if comments %}
+            <ul class="hn-comment-list">
+                {% for comment in comments %}
+                    <li class="hn-comment">
+                        <div class="hn-comment-meta">{{ comment.author.username }} · {{ comment.created_at|date:"M j, Y" }}</div>
+                        <div class="hn-comment-body">{{ comment.body|linebreaksbr }}</div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="hn-body hn-muted">No comments yet.</p>
+        {% endif %}
+    </section>
 {% endblock %}

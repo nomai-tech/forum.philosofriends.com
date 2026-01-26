@@ -111,6 +111,37 @@ a:hover {
     margin-top: 14px;
 }
 
+.hn-comments {
+    margin-top: 24px;
+}
+
+.hn-comments h2 {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.hn-comment-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.hn-comment {
+    border-top: 1px solid var(--hn-border);
+    padding: 10px 0;
+}
+
+.hn-comment-meta {
+    font-size: 11px;
+    color: var(--hn-muted);
+    margin-bottom: 6px;
+}
+
+.hn-comment-body {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
 .hn-muted {
     color: var(--hn-muted);
 }
