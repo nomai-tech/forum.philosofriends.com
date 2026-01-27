@@ -269,6 +269,20 @@ a:hover {
     cursor: pointer;
 }
 
+.hn-link-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 4px;
+}
+
+.hn-link-icon svg {
+    width: 12px;
+    height: 12px;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    fill: none;
+}
+
 .hn-footer {
     border-top: 1px solid var(--hn-border);
     padding: 14px 10px 30px;
