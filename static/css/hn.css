@@ -338,10 +338,18 @@ a:hover {
     .hn-bar,
     .hn-main,
     .hn-footer {
-        width: min(85vw, 1200px);
+        width: 85%;
         max-width: none;
         padding-left: 12px;
         padding-right: 12px;
+    }
+}
+
+@media (min-width: 900px) {
+    .hn-bar,
+    .hn-main,
+    .hn-footer {
+        min-width: 796px;
     }
 }
 
