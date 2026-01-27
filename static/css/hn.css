@@ -33,7 +33,7 @@ a:hover {
 
 .hn-bar {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     max-width: 980px;
     margin: 0 auto;
     gap: 6px;
