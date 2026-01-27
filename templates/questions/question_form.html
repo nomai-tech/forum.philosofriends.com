@@ -51,6 +51,9 @@
             const bodyField = document.getElementById('body-field');
             const titleField = document.getElementById('title-field');
             const typeInputs = document.querySelectorAll('input[name="post_type"]');
+            const titleInput = document.getElementById('id_title');
+            const bodyInput = document.getElementById('id_body');
+            const linkInput = document.getElementById('id_link');
 
             const syncFields = () => {
                 const selected = document.querySelector('input[name="post_type"]:checked');
@@ -58,6 +61,18 @@
                 if (linkField) linkField.hidden = !isLink;
                 if (bodyField) bodyField.hidden = isLink;
                 if (titleField) titleField.hidden = isLink;
+                if (titleInput) {
+                    titleInput.required = !isLink;
+                    titleInput.disabled = isLink;
+                }
+                if (bodyInput) {
+                    bodyInput.required = false;
+                    bodyInput.disabled = isLink;
+                }
+                if (linkInput) {
+                    linkInput.required = isLink;
+                    linkInput.disabled = !isLink;
+                }
             };
 
             typeInputs.forEach((input) => input.addEventListener('change', syncFields));
