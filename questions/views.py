@@ -1,10 +1,15 @@
+import logging
+
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from .forms import CommentForm, QuestionForm, SignupForm
 from .models import Comment, Question
+
+logger = logging.getLogger(__name__)
 
 
 def question_list(request):
@@ -84,9 +89,18 @@ def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('question_list')
+            try:
+                user = form.save()
+            except IntegrityError:
+                username = form.cleaned_data.get('username')
+                logger.exception("Signup failed due to IntegrityError for username=%s", username)
+                form.add_error(
+                    'username',
+                    'That username is not available. Please choose another.',
+                )
+            else:
+                login(request, user)
+                return redirect('question_list')
     else:
         form = SignupForm()
     return render(request, 'registration/signup.html', {'form': form})
