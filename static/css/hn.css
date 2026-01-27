@@ -338,6 +338,15 @@ a:hover {
     margin: 0 auto;
 }
 
+@media (min-width: 768px) {
+    .hn-bar,
+    .hn-main,
+    .hn-footer {
+        width: min(85vw, 1100px);
+        max-width: none;
+    }
+}
+
 @media (max-width: 640px) {
     .hn-bar {
         row-gap: 6px;
