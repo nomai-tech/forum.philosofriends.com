@@ -338,8 +338,10 @@ a:hover {
     .hn-bar,
     .hn-main,
     .hn-footer {
-        width: min(85vw, 1100px);
+        width: min(85vw, 1200px);
         max-width: none;
+        padding-left: 12px;
+        padding-right: 12px;
     }
 }
 
