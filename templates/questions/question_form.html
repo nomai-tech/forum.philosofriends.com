@@ -20,8 +20,8 @@
                     </label>
                 </div>
             </div>
-            <div class="hn-field">
-                <label for="id_title">Title</label>
+            <div class="hn-field" id="title-field">
+                <label for="id_title">Question</label>
                 {{ form.title }}
                 {% if form.title.errors %}
                     <div class="hn-error">{{ form.title.errors }}</div>
@@ -49,6 +49,7 @@
         (() => {
             const linkField = document.getElementById('link-field');
             const bodyField = document.getElementById('body-field');
+            const titleField = document.getElementById('title-field');
             const typeInputs = document.querySelectorAll('input[name="post_type"]');
 
             const syncFields = () => {
@@ -56,6 +57,7 @@
                 const isLink = selected && selected.value === 'link';
                 if (linkField) linkField.hidden = !isLink;
                 if (bodyField) bodyField.hidden = isLink;
+                if (titleField) titleField.hidden = isLink;
             };
 
             typeInputs.forEach((input) => input.addEventListener('change', syncFields));

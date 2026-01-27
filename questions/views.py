@@ -1,4 +1,9 @@
 import logging
+import socket
+from html.parser import HTMLParser
+from urllib.error import URLError
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -11,6 +16,51 @@ from .forms import CommentForm, QuestionForm, SignupForm
 from .models import Comment, Question, Vote
 
 logger = logging.getLogger(__name__)
+
+
+class _TitleParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self._in_title = False
+        self.title = ''
+
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() == 'title':
+            self._in_title = True
+
+    def handle_endtag(self, tag):
+        if tag.lower() == 'title':
+            self._in_title = False
+
+    def handle_data(self, data):
+        if self._in_title and not self.title:
+            self.title = data.strip()
+
+
+def fetch_link_title(url):
+    parsed = urlparse(url)
+    if parsed.scheme not in {'http', 'https'}:
+        return url
+    request = Request(
+        url,
+        headers={
+            'User-Agent': 'PhilosofriendsLinkBot/1.0',
+            'Accept': 'text/html,application/xhtml+xml',
+        },
+    )
+    try:
+        with urlopen(request, timeout=5) as response:
+            content_type = response.headers.get('Content-Type', '')
+            if 'text/html' not in content_type:
+                return url
+            charset = response.headers.get_content_charset() or 'utf-8'
+            body = response.read(200_000)
+            parser = _TitleParser()
+            parser.feed(body.decode(charset, errors='ignore'))
+            title = parser.title or url
+            return title.strip()[:180] or url
+    except (URLError, TimeoutError, socket.timeout, ValueError):
+        return url
 
 
 def question_list(request):
@@ -113,11 +163,26 @@ def question_upvote(request, pk):
 def question_create(request):
     if request.method == 'POST':
         form = QuestionForm(request.POST)
+        post_type = request.POST.get('post_type', 'question')
+        if post_type == 'link':
+            form.fields['title'].required = False
+            form.fields['body'].required = False
         if form.is_valid():
             question = form.save(commit=False)
             question.author = request.user
-            question.save()
-            return redirect('question_detail_slug', slug=question.slug)
+            if post_type == 'link':
+                link = (form.cleaned_data.get('link') or '').strip()
+                if not link:
+                    form.add_error('link', 'Add a link URL.')
+                else:
+                    question.title = fetch_link_title(link)
+                    question.body = ''
+                    question.link = link
+                    question.save()
+                    return redirect('question_detail_slug', slug=question.slug)
+            else:
+                question.save()
+                return redirect('question_detail_slug', slug=question.slug)
     else:
         form = QuestionForm()
     return render(request, 'questions/question_form.html', {'form': form})

@@ -18,9 +18,9 @@ class QuestionForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         link = (cleaned_data.get('link') or '').strip()
-        body = (cleaned_data.get('body') or '').strip()
-        if not link and not body:
-            self.add_error('body', 'Add context or include a link.')
+        title = (cleaned_data.get('title') or '').strip()
+        if not title and not link:
+            self.add_error('title', 'Add a question title or include a link.')
         return cleaned_data
 
 
