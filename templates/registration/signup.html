@@ -7,6 +7,11 @@
         <h1>Create an account</h1>
         <form method="post">
             {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="hn-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
             <div class="hn-field">
                 <label for="id_username">Username</label>
                 {{ form.username }}
@@ -37,9 +42,6 @@
                     <div class="error">{{ form.password2.errors }}</div>
                 {% endif %}
             </div>
-            {% if form.non_field_errors %}
-                <div class="error">{{ form.non_field_errors }}</div>
-            {% endif %}
             <button class="hn-button" type="submit">Signup</button>
         </form>
     </section>
