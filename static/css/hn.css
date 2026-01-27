@@ -36,7 +36,7 @@ a:hover {
     flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
-    max-width: 980px;
+    width: 85%;
     margin: 0 auto;
     gap: 10px;
 }
@@ -81,7 +81,7 @@ a:hover {
 }
 
 .hn-main {
-    max-width: 980px;
+    width: 85%;
     margin: 0 auto;
     padding: 18px 10px 40px;
 }
@@ -334,7 +334,7 @@ a:hover {
     padding: 14px 10px 30px;
     font-size: 11px;
     color: var(--hn-muted);
-    max-width: 980px;
+    width: 85%;
     margin: 0 auto;
 }
 
@@ -342,18 +342,8 @@ a:hover {
     .hn-bar,
     .hn-main,
     .hn-footer {
-        width: 85%;
-        max-width: none;
         padding-left: 12px;
         padding-right: 12px;
-    }
-}
-
-@media (min-width: 900px) {
-    .hn-bar,
-    .hn-main,
-    .hn-footer {
-        min-width: 796px;
     }
 }
 
