@@ -1,9 +1,10 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
-from .forms import CommentForm, QuestionForm, SignupForm
+from .forms import AccountDeletionForm, CommentForm, QuestionForm, SignupForm
 from .models import Comment, Question
 
 
@@ -90,3 +91,40 @@ def signup(request):
     else:
         form = SignupForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+
+@login_required
+def account_delete(request):
+    # Ensure we're only working with the authenticated user
+    # This is redundant but provides explicit security guarantee
+    user_to_delete = request.user
+    
+    if request.method == 'POST':
+        form = AccountDeletionForm(user_to_delete, request.POST)
+        if form.is_valid():
+            # Double-check: ensure the form validated against the correct user
+            # The form's clean_password already verified the password matches user_to_delete
+            if form.user != user_to_delete:
+                # This should never happen, but defense-in-depth
+                return redirect('question_list')
+            
+            # Store user ID for final verification
+            user_id = user_to_delete.id
+            
+            # Logout before deleting to avoid session issues
+            logout(request)
+            
+            # Fetch the user by ID to ensure we're deleting the correct user
+            # This prevents any potential race conditions or session manipulation
+            try:
+                user = User.objects.get(id=user_id)
+                # Delete the user (this will cascade delete questions and comments)
+                user.delete()
+            except User.DoesNotExist:
+                # User was already deleted (shouldn't happen, but handle gracefully)
+                pass
+            
+            return redirect('question_list')
+    else:
+        form = AccountDeletionForm(user_to_delete)
+    return render(request, 'registration/account_delete.html', {'form': form})

@@ -26,6 +26,8 @@
                     {% if user.is_authenticated %}
                         <span class="hn-user">{{ user.username }}</span>
                         <span class="hn-sep">|</span>
+                        <a href="/account/delete/">delete account</a>
+                        <span class="hn-sep">|</span>
                         <a href="/accounts/logout/">logout</a>
                     {% else %}
                         <a href="/accounts/login/">login</a>
@@ -38,6 +40,13 @@
     </header>
 
     <main class="hn-main">
+        {% if messages %}
+            <div style="padding: 1em; margin: 1em 0; background-color: #f0f0f0; border-left: 3px solid #666;">
+                {% for message in messages %}
+                    <div>{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
         {% block content %}{% endblock %}
     </main>
 
