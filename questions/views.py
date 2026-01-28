@@ -7,7 +7,6 @@ from urllib.request import Request, urlopen
 
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.db.models import Count, Exists, OuterRef
 from django.shortcuts import get_object_or_404, redirect, render
@@ -233,25 +232,8 @@ def account_delete(request):
     if request.method == 'POST':
         form = AccountDeletionForm(user_to_delete, request.POST)
         if form.is_valid():
-            if form.user != user_to_delete:
-                return redirect('question_list')
-            user_id = user_to_delete.id
             logout(request)
-            try:
-                user = User.objects.get(id=user_id)
-                user.delete()
-            except User.DoesNotExist:
-                logger.warning(
-                    "Account deletion: user id=%s no longer exists after logout (race or already deleted)",
-                    user_id,
-                    exc_info=True,
-                )
-            except Exception:
-                logger.exception(
-                    "Account deletion failed for user id=%s",
-                    user_id,
-                )
-                # Graceful degradation: user is already logged out; redirect instead of 500
+            user_to_delete.delete()
             return redirect('question_list')
     else:
         form = AccountDeletionForm(user_to_delete)
