@@ -134,8 +134,8 @@ a:hover {
     color: #8a9aab;
     width: 16px;
     height: 16px;
-    line-height: 12px;
-    font-size: 10px;
+    line-height: 14px;
+    font-size: 12px;
     cursor: pointer;
     padding: 0;
 }
@@ -153,7 +153,7 @@ a:hover {
     height: 16px;
     display: grid;
     place-items: center;
-    font-size: 10px;
+    font-size: 12px;
     color: #8a9aab;
     opacity: 0.6;
 }
