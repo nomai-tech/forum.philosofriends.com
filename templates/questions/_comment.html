@@ -1,8 +1,20 @@
 <li class="hn-comment">
-    <div class="hn-comment-meta">{{ comment.author.username }} · {{ comment.created_at|date:"M j, Y" }}</div>
+    <div class="hn-comment-meta">
+        <span class="hn-comment-author">{{ comment.author.username }}</span>
+        <span class="hn-comment-sep">·</span>
+        <span class="hn-comment-date">{{ comment.created_at|date:"M j, Y" }}</span>
+        {% if comment.children %}
+            <button class="hn-reply-toggle" type="button" aria-expanded="true" aria-label="Collapse replies">-</button>
+        {% endif %}
+    </div>
     <div class="hn-comment-body">{{ comment.body|linebreaksbr }}</div>
+    {% if user.is_authenticated %}
+        <div class="hn-comment-actions">
+            <button class="hn-reply-button" type="button" data-comment-id="{{ comment.id }}" data-comment-author="{{ comment.author.username }}">Reply</button>
+        </div>
+    {% endif %}
     {% if comment.children %}
-        <ul class="hn-comment-children">
+        <ul class="hn-comment-children" data-collapsible="true">
             {% for child in comment.children %}
                 {% include "questions/_comment.html" with comment=child %}
             {% endfor %}
