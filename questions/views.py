@@ -164,6 +164,17 @@ def question_upvote(request, pk):
 
 
 @login_required
+def question_pin_toggle(request, pk):
+    question = get_object_or_404(Question, pk=pk)
+    if request.user.username != 'jon' or request.method != 'POST':
+        return redirect('question_detail_slug', slug=question.slug)
+    question.pinned = not question.pinned
+    question.save(update_fields=['pinned'])
+    next_url = request.POST.get('next') or reverse('question_detail_slug', args=[question.slug])
+    return redirect(next_url)
+
+
+@login_required
 def question_create(request):
     if request.method == 'POST':
         form = QuestionForm(request.POST)
