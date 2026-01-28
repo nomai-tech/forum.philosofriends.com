@@ -224,6 +224,10 @@ a:hover {
     gap: 8px;
 }
 
+.hn-comment-children[hidden] {
+    display: none;
+}
+
 .hn-comment-meta {
     font-size: 11px;
     color: var(--hn-muted);
@@ -273,9 +277,11 @@ a:hover {
 
 .hn-reply-toggle {
     background: none;
-    border: none;
+    border: 1px solid var(--hn-border);
     color: var(--hn-muted);
-    padding: 0;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #f6f9fd;
     font-size: 11px;
     line-height: 1;
     cursor: pointer;

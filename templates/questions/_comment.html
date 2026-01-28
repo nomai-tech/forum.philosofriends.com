@@ -4,7 +4,7 @@
         <span class="hn-comment-sep">·</span>
         <span class="hn-comment-date">{{ comment.created_at|date:"M j, Y" }}</span>
         {% if comment.children %}
-            <button class="hn-reply-toggle" type="button" aria-expanded="true" aria-label="Collapse replies">−</button>
+            <button class="hn-reply-toggle" type="button" aria-expanded="true" aria-label="Collapse replies">(-)</button>
         {% endif %}
     </div>
     <div class="hn-comment-body">{{ comment.body|linebreaksbr }}</div>

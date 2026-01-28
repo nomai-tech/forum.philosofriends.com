@@ -84,7 +84,7 @@
                         const isCollapsed = children.hidden;
                         children.hidden = !isCollapsed;
                         button.setAttribute('aria-expanded', String(isCollapsed));
-                        button.textContent = isCollapsed ? '−' : '+';
+                    button.textContent = isCollapsed ? '(-)' : '(+)';
                         button.setAttribute(
                             'aria-label',
                             isCollapsed ? 'Collapse replies' : 'Expand replies',
