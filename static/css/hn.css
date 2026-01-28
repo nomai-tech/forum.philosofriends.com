@@ -36,7 +36,6 @@ a:hover {
     flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
-    width: 85%;
     margin: 0 auto;
     gap: 10px;
 }
