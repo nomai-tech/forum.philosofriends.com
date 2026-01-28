@@ -216,9 +216,11 @@ a:hover {
 
 .hn-comment-children {
     list-style: none;
-    padding-left: 16px;
+    padding-left: 0;
     margin: 10px 0 0;
-    border-left: 1px solid var(--hn-border);
+    border-left: none;
+    display: grid;
+    gap: 8px;
 }
 
 .hn-comment-meta {
@@ -234,6 +236,30 @@ a:hover {
 
 .hn-comment-actions {
     margin-top: 6px;
+}
+
+.hn-comment-children .hn-comment {
+    border: 1px solid var(--hn-border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #f1f6fb;
+}
+
+.hn-comment-children .hn-comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hn-comment-children .hn-comment-meta::before {
+    content: "reply";
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--hn-muted);
+    background: #e3edf6;
+    padding: 2px 6px;
+    border-radius: 999px;
 }
 
 .hn-reply-button,
