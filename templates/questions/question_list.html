@@ -38,7 +38,13 @@
                             {% endif %}
                         </div>
                         <div class="hn-item-meta">
-                            {{ question.score|default:0 }} point{{ question.score|pluralize }} · asked by {{ question.author.username }} · {{ question.created_at|date:"M j, Y" }} · <a href="{% url 'question_detail_slug' question.slug %}">{{ question.comments.count }} comments</a>
+                            {{ question.score|default:0 }} point{{ question.score|pluralize }} · asked by
+                            {% if question.author.profile.is_vip %}
+                                <span class="hn-user hn-user--vip">{{ question.author.username }}</span>
+                            {% else %}
+                                {{ question.author.username }}
+                            {% endif %}
+                            · {{ question.created_at|date:"M j, Y" }} · <a href="{% url 'question_detail_slug' question.slug %}">{{ question.comments.count }} comments</a>
                             {% if question.pinned %}
                                 · <span class="hn-pin">pinned</span>
                             {% endif %}

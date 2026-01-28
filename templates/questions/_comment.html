@@ -1,6 +1,10 @@
 <li class="hn-comment">
     <div class="hn-comment-meta">
-        <span class="hn-comment-author">{{ comment.author.username }}</span>
+        {% if comment.author.profile.is_vip %}
+            <span class="hn-comment-author hn-user--vip">{{ comment.author.username }}</span>
+        {% else %}
+            <span class="hn-comment-author">{{ comment.author.username }}</span>
+        {% endif %}
         <span class="hn-comment-sep">·</span>
         <span class="hn-comment-date">{{ comment.created_at|date:"M j, Y" }}</span>
         {% if comment.children %}

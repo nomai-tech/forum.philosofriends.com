@@ -79,6 +79,11 @@ a:hover {
     font-weight: bold;
 }
 
+.hn-user--vip {
+    color: #2e8b57;
+    font-weight: 600;
+}
+
 .hn-main {
     padding: 14px 16px 28px;
 }

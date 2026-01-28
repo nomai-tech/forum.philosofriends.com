@@ -21,7 +21,13 @@
     <article class="hn-article">
         <h1>{{ question.title }}</h1>
         <div class="hn-item-meta">
-            asked by {{ question.author.username }} · {{ question.created_at|date:"M j, Y" }}
+            asked by
+            {% if question.author.profile.is_vip %}
+                <span class="hn-user hn-user--vip">{{ question.author.username }}</span>
+            {% else %}
+                {{ question.author.username }}
+            {% endif %}
+            · {{ question.created_at|date:"M j, Y" }}
         </div>
         {% if question.link %}
             <p class="hn-body">

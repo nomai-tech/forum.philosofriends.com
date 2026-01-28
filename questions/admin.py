@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Comment, Question
+from .models import Comment, Profile, Question
 
 
 @admin.register(Question)
@@ -16,3 +16,10 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('question', 'author', 'parent', 'created_at')
     search_fields = ('body', 'author__username', 'question__title')
     ordering = ('-created_at',)
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'is_vip')
+    search_fields = ('user__username', 'user__email')
+    list_filter = ('is_vip',)

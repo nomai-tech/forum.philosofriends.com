@@ -68,7 +68,7 @@ def fetch_link_title(url):
 def question_list(request):
     sort = request.GET.get('sort')
     questions = (
-        Question.objects.select_related('author')
+        Question.objects.select_related('author', 'author__profile')
         .prefetch_related('comments')
         .annotate(score=Count('votes'))
     )
@@ -85,8 +85,8 @@ def question_list(request):
 
 def question_detail(request, pk):
     question = get_object_or_404(
-        Question.objects.select_related('author')
-        .prefetch_related('comments__author')
+        Question.objects.select_related('author', 'author__profile')
+        .prefetch_related('comments__author', 'comments__author__profile')
         .annotate(score=Count('votes')),
         pk=pk,
     )
@@ -120,7 +120,7 @@ def question_detail(request, pk):
     else:
         form = CommentForm()
 
-    comments = list(question.comments.select_related('author').order_by('created_at'))
+    comments = list(question.comments.select_related('author', 'author__profile').order_by('created_at'))
     comment_map = {}
     for comment in comments:
         comment_map.setdefault(comment.parent_id, []).append(comment)
@@ -149,7 +149,8 @@ def question_detail(request, pk):
 
 def question_detail_slug(request, slug):
     question = get_object_or_404(
-        Question.objects.select_related('author').prefetch_related('comments__author'),
+        Question.objects.select_related('author', 'author__profile')
+        .prefetch_related('comments__author', 'comments__author__profile'),
         slug=slug,
     )
     return question_detail(request, question.pk)
