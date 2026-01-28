@@ -5,9 +5,10 @@ from .models import Comment, Question
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'author', 'created_at')
+    list_display = ('title', 'slug', 'author', 'created_at', 'pinned')
     search_fields = ('title', 'body', 'author__username')
-    ordering = ('-created_at',)
+    list_filter = ('pinned',)
+    ordering = ('-pinned', '-created_at')
 
 
 @admin.register(Comment)

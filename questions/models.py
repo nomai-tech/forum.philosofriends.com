@@ -9,6 +9,7 @@ class Question(models.Model):
     link = models.URLField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions')
+    pinned = models.BooleanField(default=False, db_index=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:

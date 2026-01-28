@@ -5,7 +5,7 @@
 {% block content %}
     <ol class="hn-list">
         {% for question in questions %}
-            <li class="hn-item">
+            <li class="hn-item{% if question.pinned %} hn-item--pinned{% endif %}">
                 <div class="hn-item-header">
                     <div class="hn-vote">
                         {% if user.is_authenticated %}
@@ -39,6 +39,9 @@
                         </div>
                         <div class="hn-item-meta">
                             {{ question.score|default:0 }} point{{ question.score|pluralize }} · asked by {{ question.author.username }} · {{ question.created_at|date:"M j, Y" }} · <a href="{% url 'question_detail_slug' question.slug %}">{{ question.comments.count }} comments</a>
+                            {% if question.pinned %}
+                                · <span class="hn-pin">pinned</span>
+                            {% endif %}
                             {% if question.link %}
                                 · <a href="{{ question.link }}" rel="noopener noreferrer" target="_blank">source</a>
                             {% endif %}

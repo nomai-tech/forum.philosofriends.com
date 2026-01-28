@@ -71,9 +71,9 @@ def question_list(request):
         .annotate(score=Count('votes'))
     )
     if sort == 'new':
-        questions = questions.order_by('-created_at', '-score')
+        questions = questions.order_by('-pinned', '-created_at', '-score')
     else:
-        questions = questions.order_by('-score', '-created_at')
+        questions = questions.order_by('-pinned', '-score', '-created_at')
     if request.user.is_authenticated:
         questions = questions.annotate(
             has_voted=Exists(Vote.objects.filter(question=OuterRef('pk'), user=request.user))

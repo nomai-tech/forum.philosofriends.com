@@ -93,6 +93,18 @@ a:hover {
     padding-left: 0px;
 }
 
+.hn-item--pinned {
+    background: #fff6d8;
+    border: 1px solid #f1d28a;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.hn-pin {
+    font-weight: bold;
+    color: #9a6a00;
+}
+
 .hn-item-header {
     display: flex;
     align-items: flex-start;
