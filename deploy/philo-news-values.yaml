@@ -9,14 +9,22 @@ service:
   targetPort: 8080
 
 env:
-  - name: DATABASE_PATH
-    value: /data/db.sqlite3
   - name: DEBUG
     value: "false"
   - name: ALLOWED_HOSTS
     value: forum.philosofriends.com
   - name: CSRF_TRUSTED_ORIGINS
     value: https://forum.philosofriends.com,http://forum.philosofriends.com
+  - name: POSTGRES_HOST
+    value: postgres-postgresql.default.svc.cluster.local
+  - name: POSTGRES_PORT
+    value: "5432"
+  - name: POSTGRES_DB
+    value: philonet
+  - name: POSTGRES_USER
+    value: philonet
+  - name: POSTGRES_PASSWORD
+    value: CHANGEME
 
 command:
   - /app/entrypoint.sh
