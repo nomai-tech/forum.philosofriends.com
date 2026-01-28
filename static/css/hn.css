@@ -103,11 +103,13 @@ a:hover {
 
 .hn-item-title {
     font-size: 14px;
+    line-height: 1.2;
 }
 
 .hn-item-meta {
     font-size: 11px;
     color: var(--hn-muted);
+    margin-top: 2px;
 }
 
 .hn-vote {
@@ -124,7 +126,7 @@ a:hover {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-top: 6px;
+    margin-top: 2px;
     font-size: 11px;
     color: var(--hn-muted);
 }
