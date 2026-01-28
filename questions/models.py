@@ -6,8 +6,10 @@ class Question(models.Model):
     title = models.CharField(max_length=180)
     slug = models.SlugField(max_length=200, unique=True, blank=True)
     body = models.TextField(blank=True)
+    link = models.URLField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions')
+    pinned = models.BooleanField(default=False, db_index=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -22,6 +24,20 @@ class Question(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Vote(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='votes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='question_votes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['question', 'user'], name='unique_question_vote'),
+        ]
+
+    def __str__(self):
+        return f'{self.user.username} upvoted {self.question.title}'
 
 
 class Comment(models.Model):
