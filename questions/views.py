@@ -168,7 +168,7 @@ def question_upvote(request, pk):
 @login_required
 def question_pin_toggle(request, pk):
     question = get_object_or_404(Question, pk=pk)
-    if request.user.username != 'jon' or request.method != 'POST':
+    if not request.user.is_superuser or request.method != 'POST':
         return redirect('question_detail_slug', slug=question.slug)
     question.pinned = not question.pinned
     question.save(update_fields=['pinned'])
