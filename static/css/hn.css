@@ -88,7 +88,7 @@ a:hover {
 
 .hn-list {
     margin: 0;
-    padding-left: 20px;
+    padding-left: 12px;
 }
 
 .hn-item {
@@ -98,7 +98,7 @@ a:hover {
 .hn-item-header {
     display: flex;
     align-items: flex-start;
-    gap: 2px;
+    gap: 0;
 }
 
 .hn-item-title {
