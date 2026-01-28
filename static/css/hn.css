@@ -85,11 +85,12 @@ a:hover {
 
 .hn-list {
     margin: 0;
-    padding-left: 6px;
+    padding-left: 12px;
 }
 
 .hn-item {
     margin-bottom: 14px;
+    padding-left: 8px;
 }
 
 .hn-item-header {
