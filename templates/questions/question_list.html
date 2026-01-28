@@ -7,19 +7,6 @@
         {% for question in questions %}
             <li class="hn-item">
                 <div class="hn-item-header">
-                    <div class="hn-vote">
-                        {% if user.is_authenticated %}
-                            <form method="post" action="{% url 'question_upvote' question.pk %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                                <button class="hn-vote-button {% if question.has_voted %}hn-vote-active{% endif %}" type="submit" aria-label="Upvote">
-                                    up
-                                </button>
-                            </form>
-                        {% else %}
-                            <div class="hn-vote-placeholder">up</div>
-                        {% endif %}
-                    </div>
                     <div class="hn-item-title">
                         {% if question.link %}
                             <a href="{{ question.link }}" rel="noopener noreferrer" target="_blank">
