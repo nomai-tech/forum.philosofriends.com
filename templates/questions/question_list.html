@@ -40,7 +40,7 @@
                         <div class="hn-item-meta">
                             {{ question.score|default:0 }} point{{ question.score|pluralize }} · asked by
                             {% if question.author.profile.is_vip %}
-                                <span class="hn-user hn-user--vip">{{ question.author.username }}</span>
+                                <span class="hn-user--vip">{{ question.author.username }}</span>
                             {% else %}
                                 {{ question.author.username }}
                             {% endif %}
