@@ -23,9 +23,9 @@
         <div class="hn-item-meta">
             asked by
             {% if question.author.profile.is_vip %}
-                <span class="hn-user--vip">{{ question.author.username }}</span>
+                <a class="hn-user--vip" href="{% url 'profile_detail' question.author.username %}">{{ question.author.username }}</a>
             {% else %}
-                {{ question.author.username }}
+                <a href="{% url 'profile_detail' question.author.username %}">{{ question.author.username }}</a>
             {% endif %}
             · {{ question.created_at|date:"M j, Y" }}
         </div>

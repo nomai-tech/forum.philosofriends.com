@@ -1,9 +1,9 @@
 <li class="hn-comment">
     <div class="hn-comment-meta">
         {% if comment.author.profile.is_vip %}
-            <span class="hn-comment-author hn-user--vip">{{ comment.author.username }}</span>
+            <a class="hn-comment-author hn-user--vip" href="{% url 'profile_detail' comment.author.username %}">{{ comment.author.username }}</a>
         {% else %}
-            <span class="hn-comment-author">{{ comment.author.username }}</span>
+            <a class="hn-comment-author" href="{% url 'profile_detail' comment.author.username %}">{{ comment.author.username }}</a>
         {% endif %}
         <span class="hn-comment-sep">·</span>
         <span class="hn-comment-date">{{ comment.created_at|date:"M j, Y" }}</span>

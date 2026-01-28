@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profile_user.username }} · Philosofriends{% endblock %}
+
+{% block content %}
+    <section class="hn-profile">
+        <h1>
+            {% if profile_user.profile.is_vip %}
+                <span class="hn-user--vip">{{ profile_user.username }}</span>
+            {% else %}
+                {{ profile_user.username }}
+            {% endif %}
+        </h1>
+        <p class="hn-muted">Posts by {{ profile_user.username }}</p>
+    </section>
+
+    {% if questions %}
+        <ol class="hn-list">
+            {% for question in questions %}
+                <li class="hn-item{% if question.pinned %} hn-item--pinned{% endif %}">
+                    <div class="hn-item-header">
+                        <div class="hn-item-content">
+                            <div class="hn-item-title">
+                                {% if question.link %}
+                                    <a href="{{ question.link }}" rel="noopener noreferrer" target="_blank">
+                                        {{ question.title }}
+                                        <span class="hn-link-icon" aria-hidden="true">
+                                            <svg viewBox="0 0 16 16" focusable="false">
+                                                <path d="M10.5 2.5h3v3" />
+                                                <path d="M9.2 6.8L13.5 2.5" />
+                                                <path d="M7.5 3.5H3.5v9h9v-4" />
+                                            </svg>
+                                        </span>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'question_detail_slug' question.slug %}">{{ question.title }}</a>
+                                {% endif %}
+                            </div>
+                            <div class="hn-item-meta">
+                                {{ question.score|default:0 }} point{{ question.score|pluralize }} · {{ question.created_at|date:"M j, Y" }}
+                                · <a href="{% url 'question_detail_slug' question.slug %}">{{ question.comments_count|default:0 }} comments</a>
+                                {% if question.pinned %}
+                                    · <span class="hn-pin">pinned</span>
+                                {% endif %}
+                                {% if question.link %}
+                                    · <a href="{{ question.link }}" rel="noopener noreferrer" target="_blank">source</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <p class="hn-body hn-muted">No posts yet.</p>
+    {% endif %}
+{% endblock %}

@@ -7,6 +7,7 @@ from urllib.request import Request, urlopen
 
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.db.models import Count, Exists, OuterRef
 from django.shortcuts import get_object_or_404, redirect, render
@@ -81,6 +82,27 @@ def question_list(request):
             has_voted=Exists(Vote.objects.filter(question=OuterRef('pk'), user=request.user))
         )
     return render(request, 'questions/question_list.html', {'questions': questions})
+
+
+def profile_detail(request, username):
+    profile_user = get_object_or_404(
+        User.objects.select_related('profile'),
+        username=username,
+    )
+    questions = (
+        Question.objects.filter(author=profile_user)
+        .select_related('author', 'author__profile')
+        .annotate(score=Count('votes'), comments_count=Count('comments'))
+        .order_by('-pinned', '-created_at')
+    )
+    return render(
+        request,
+        'questions/profile.html',
+        {
+            'profile_user': profile_user,
+            'questions': questions,
+        },
+    )
 
 
 def question_detail(request, pk):
