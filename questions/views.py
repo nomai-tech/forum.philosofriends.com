@@ -241,7 +241,17 @@ def account_delete(request):
                 user = User.objects.get(id=user_id)
                 user.delete()
             except User.DoesNotExist:
-                pass
+                logger.warning(
+                    "Account deletion: user id=%s no longer exists after logout (race or already deleted)",
+                    user_id,
+                    exc_info=True,
+                )
+            except Exception:
+                logger.exception(
+                    "Account deletion failed for user id=%s",
+                    user_id,
+                )
+                # Graceful degradation: user is already logged out; redirect instead of 500
             return redirect('question_list')
     else:
         form = AccountDeletionForm(user_to_delete)
