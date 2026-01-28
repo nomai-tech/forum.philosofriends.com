@@ -252,14 +252,10 @@ a:hover {
 }
 
 .hn-comment-children .hn-comment-meta::before {
-    content: "reply";
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    content: "↳";
+    font-size: 12px;
+    line-height: 1;
     color: var(--hn-muted);
-    background: #e3edf6;
-    padding: 2px 6px;
-    border-radius: 999px;
 }
 
 .hn-reply-button,
