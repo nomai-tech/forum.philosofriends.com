@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Account · Philosofriends{% endblock %}
+
+{% block content %}
+    <section class="hn-form">
+        <h1>Delete Account</h1>
+        <p class="hn-body" style="color: #c00; margin-bottom: 1.5em;">
+            <strong>Warning:</strong> This action cannot be undone. All your questions, comments, and account data will be permanently deleted.
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="hn-field">
+                <label for="id_password">Password</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="hn-error">{{ form.password.errors }}</div>
+                {% endif %}
+                {% if form.password.help_text %}
+                    <small class="hn-muted">{{ form.password.help_text }}</small>
+                {% endif %}
+            </div>
+            <div class="hn-field">
+                <label style="display: flex; align-items: center; gap: 0.5em;">
+                    {{ form.confirm }}
+                    <span>I understand this action cannot be undone</span>
+                </label>
+                {% if form.confirm.errors %}
+                    <div class="hn-error">{{ form.confirm.errors }}</div>
+                {% endif %}
+                {% if form.confirm.help_text %}
+                    <small class="hn-muted">{{ form.confirm.help_text }}</small>
+                {% endif %}
+            </div>
+            {% if form.non_field_errors %}
+                <div class="hn-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <div style="display: flex; gap: 1em; margin-top: 1.5em;">
+                <button class="hn-button" type="submit" style="background-color: #c00;">Delete account</button>
+                <a href="/" class="hn-button" style="background-color: #666; text-decoration: none;">Cancel</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}
