@@ -98,7 +98,7 @@ a:hover {
 .hn-item-header {
     display: flex;
     align-items: flex-start;
-    gap: 6px;
+    gap: 2px;
 }
 
 .hn-item-title {
