@@ -33,11 +33,11 @@ env:
 
 resources:
   requests:
-    cpu: 500m
-    memory: 512Mi
-  limits:
     cpu: "1"
     memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 2Gi
 
 command:
   - /app/entrypoint.sh
