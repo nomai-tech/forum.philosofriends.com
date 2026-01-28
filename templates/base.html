@@ -43,7 +43,7 @@
             Philosofriends is a place for short, sincere questions about meaning, mind, and ethics.
             · <a href="https://luma.com/philosofriends" rel="noopener noreferrer" target="_blank">Events calendar</a>
             {% if user.is_authenticated %}
-            · <a href="/account/delete/">Delete account</a>
+            · <a href="{% url 'account_delete' %}">Delete account</a>
             {% endif %}
         </div>
     </footer>
