@@ -226,6 +226,11 @@ def signup(request):
     return render(request, 'registration/signup.html', {'form': form})
 
 
+def logout_view(request):
+    logout(request)
+    return redirect('question_list')
+
+
 @login_required
 def account_delete(request):
     user_to_delete = request.user
