@@ -1,5 +1,4 @@
 import logging
-import time
 import socket
 from html.parser import HTMLParser
 from urllib.error import URLError
@@ -7,8 +6,6 @@ from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db.models import Count, Exists, OuterRef
@@ -19,7 +16,6 @@ from .forms import AccountDeletionForm, CommentForm, QuestionForm, SignupForm
 from .models import Comment, Question, Vote
 
 logger = logging.getLogger(__name__)
-timing_logger = logging.getLogger("philonet")
 
 
 class _TitleParser(HTMLParser):
@@ -67,27 +63,6 @@ def fetch_link_title(url):
         return url
 
 
-class TimedAuthenticationForm(AuthenticationForm):
-    def clean(self):
-        start = time.monotonic()
-        result = super().clean()
-        self.auth_duration_ms = (time.monotonic() - start) * 1000
-        return result
-
-
-class TimedLoginView(LoginView):
-    form_class = TimedAuthenticationForm
-
-    def form_valid(self, form):
-        start = time.monotonic()
-        response = super().form_valid(form)
-        login_ms = (time.monotonic() - start) * 1000
-        auth_ms = getattr(form, 'auth_duration_ms', None)
-        if auth_ms is None:
-            timing_logger.info("Login login=%.1fms", login_ms)
-        else:
-            timing_logger.info("Login auth=%.1fms login=%.1fms", auth_ms, login_ms)
-        return response
 
 
 def question_list(request):
