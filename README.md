@@ -40,3 +40,4 @@ helm upgrade --install forum deploy/web-app \
 
 - Production uses `uvicorn` via the Helm `command`/`args` values.
 - `DATABASE_PATH` controls sqlite location; for k3s it is mounted at `/data/db.sqlite3`.
+- Set `POSTGRES_HOST/POSTGRES_DB/POSTGRES_USER/POSTGRES_PASSWORD` or `DATABASE_URL` to use Postgres instead of sqlite.
