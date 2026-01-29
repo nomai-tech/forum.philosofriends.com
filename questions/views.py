@@ -71,6 +71,8 @@ def fetch_link_title(url):
 def _format_question_date(created_at, now):
     delta_seconds = max((now - created_at).total_seconds(), 0.0)
     if delta_seconds < 86400:
+        if delta_seconds < 60:
+            return "just now"
         total_minutes = int(delta_seconds // 60)
         hours, minutes = divmod(total_minutes, 60)
         if hours:
