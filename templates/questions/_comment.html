@@ -15,6 +15,9 @@
     {% if user.is_authenticated %}
         <div class="hn-comment-actions">
             <button class="hn-reply-button" type="button" data-comment-id="{{ comment.id }}" data-comment-author="{{ comment.author.username }}">Reply</button>
+            {% if user == comment.author or user.is_superuser %}
+                <a class="hn-comment-edit" href="{% url 'comment_edit' comment.pk %}?next={{ request.get_full_path|urlencode }}">Edit</a>
+            {% endif %}
         </div>
     {% endif %}
     {% if comment.children %}

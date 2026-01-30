@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Edit comment · Philosofriends{% endblock %}
+
+{% block content %}
+    <section class="hn-form">
+        <h1>Edit comment</h1>
+        <p class="hn-body hn-muted">On <a href="{% url 'question_detail_slug' question.slug %}">{{ question.title }}</a></p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next_url }}">
+            <div class="hn-field">
+                <label for="id_body">Comment</label>
+                {{ form.body }}
+                {% if form.body.errors %}
+                    <div class="hn-error">{{ form.body.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="hn-field">
+                <button class="hn-button" type="submit">Save changes</button>
+                <a class="hn-button" href="{{ next_url }}">Cancel</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}

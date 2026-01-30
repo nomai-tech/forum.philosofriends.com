@@ -215,6 +215,35 @@ def question_detail_slug(request, slug):
 
 
 @login_required
+def comment_edit(request, pk):
+    comment = get_object_or_404(Comment.objects.select_related('question'), pk=pk)
+    if request.user != comment.author and not request.user.is_superuser:
+        return redirect('question_detail_slug', slug=comment.question.slug)
+    next_url = (
+        request.POST.get('next')
+        or request.GET.get('next')
+        or reverse('question_detail_slug', args=[comment.question.slug])
+    )
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect(next_url)
+    else:
+        form = CommentForm(instance=comment)
+    return render(
+        request,
+        'questions/comment_edit.html',
+        {
+            'comment': comment,
+            'question': comment.question,
+            'form': form,
+            'next_url': next_url,
+        },
+    )
+
+
+@login_required
 def question_upvote(request, pk):
     question = get_object_or_404(Question, pk=pk)
     if request.method != 'POST':
