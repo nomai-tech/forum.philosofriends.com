@@ -79,26 +79,25 @@
     <script>
         (() => {
             const toggleButtons = document.querySelectorAll('.hn-reply-toggle');
-                toggleButtons.forEach((button) => {
-                    button.addEventListener('click', () => {
-                        const comment = button.closest('.hn-comment');
-                        if (!comment) return;
-                        const children = Array.from(comment.children).find(
-                            (child) => child.classList && child.classList.contains('hn-comment-children'),
-                        );
-                        if (!children) return;
-                        const isCollapsed = children.hidden;
-                        children.hidden = !isCollapsed;
-                        button.setAttribute('aria-expanded', String(isCollapsed));
+            toggleButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const comment = button.closest('.hn-comment');
+                    if (!comment) return;
+                    const children = Array.from(comment.children).find(
+                        (child) => child.classList && child.classList.contains('hn-comment-children'),
+                    );
+                    if (!children) return;
+                    const isCollapsed = children.hidden;
+                    children.hidden = !isCollapsed;
+                    button.setAttribute('aria-expanded', String(isCollapsed));
                     button.textContent = isCollapsed ? '-' : '+';
-                        button.setAttribute(
-                            'aria-label',
-                            isCollapsed ? 'Collapse replies' : 'Expand replies',
-                        );
-                    });
+                    button.setAttribute(
+                        'aria-label',
+                        isCollapsed ? 'Collapse replies' : 'Expand replies',
+                    );
                 });
+            });
             const replyButtons = document.querySelectorAll('.hn-reply-button');
-            if (!replyButtons.length) return;
             const parentInput = document.getElementById('comment-parent-id');
             const replyingTo = document.getElementById('replying-to');
             const replyingName = document.getElementById('replying-to-name');
@@ -125,7 +124,11 @@
             });
 
             if (replyCancel) {
-                replyCancel.addEventListener('click', clearReply);
+                replyCancel.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    clearReply();
+                    if (commentBody) commentBody.focus();
+                });
             }
         })();
     </script>
