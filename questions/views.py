@@ -219,7 +219,11 @@ def question_upvote(request, pk):
     question = get_object_or_404(Question, pk=pk)
     if request.method != 'POST':
         return redirect('question_detail_slug', slug=question.slug)
-    Vote.objects.get_or_create(question=question, user=request.user)
+    existing_vote = Vote.objects.filter(question=question, user=request.user)
+    if existing_vote.exists():
+        existing_vote.delete()
+    else:
+        Vote.objects.create(question=question, user=request.user)
     next_url = request.POST.get('next') or reverse('question_detail_slug', args=[question.slug])
     return redirect(next_url)
 
