@@ -89,7 +89,7 @@ def question_list(request):
     questions = (
         Question.objects.select_related('author', 'author__profile')
         .prefetch_related('comments')
-        .annotate(score=Count('votes'), comments_count=Count('comments'))
+        .annotate(score=Count('votes', distinct=True), comments_count=Count('comments', distinct=True))
     )
     if request.user.is_authenticated:
         questions = questions.annotate(
@@ -128,7 +128,7 @@ def profile_detail(request, username):
     questions = (
         Question.objects.filter(author=profile_user)
         .select_related('author', 'author__profile')
-        .annotate(score=Count('votes'), comments_count=Count('comments'))
+        .annotate(score=Count('votes', distinct=True), comments_count=Count('comments', distinct=True))
         .order_by('-pinned', '-created_at')
     )
     return render(
