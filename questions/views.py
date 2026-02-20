@@ -101,6 +101,16 @@ def _format_question_date(created_at, now):
     return date_format(timezone.localtime(created_at), "M j, Y")
 
 
+def _ranking_params(total_questions):
+    # Strengthen recency when inventory is low so new posts surface quickly.
+    low_volume_threshold = 30
+    scarcity = max(0.0, min(1.0, (low_volume_threshold - total_questions) / low_volume_threshold))
+    gravity = 1.8 + (1.2 * scarcity)
+    base_offset = 2.0 - (1.2 * scarcity)
+    freshness_bonus_strength = 5.0 * scarcity
+    return gravity, base_offset, freshness_bonus_strength
+
+
 def question_list(request):
     sort = request.GET.get('sort')
     now = timezone.now()
@@ -116,14 +126,17 @@ def question_list(request):
     if sort == 'new':
         questions = questions.order_by('-pinned', '-created_at', '-score')
     else:
-        gravity = 1.8
-        base_offset = 2.0
+        total_questions = questions.count()
+        gravity, base_offset, freshness_bonus_strength = _ranking_params(total_questions)
         questions = list(questions)
         for question in questions:
             age_hours = max((now - question.created_at).total_seconds() / 3600.0, 0.0)
             points = question.score or 0
             comments = question.comments_count or 0
-            question.rank_score = (points + 0.8 * comments) / pow(age_hours + base_offset, gravity)
+            freshness_bonus = freshness_bonus_strength / pow(age_hours + 1.0, 1.1)
+            question.rank_score = (points + 0.8 * comments + freshness_bonus) / pow(
+                age_hours + base_offset, gravity
+            )
         questions.sort(
             key=lambda item: (
                 0 if item.pinned else 1,

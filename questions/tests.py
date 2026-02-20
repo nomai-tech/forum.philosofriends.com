@@ -1,10 +1,13 @@
-from django.contrib.auth.models import User
-from django.test import TestCase
-from django.test.utils import override_settings
-from django.urls import reverse
+from datetime import timedelta
 from unittest.mock import patch
 
-from .models import Comment, Question
+from django.contrib.auth.models import AnonymousUser, User
+from django.test import RequestFactory, TestCase
+from django.test.utils import override_settings
+from django.urls import reverse
+from django.utils import timezone
+
+from .models import Comment, Question, Vote
 
 
 class AdminImpersonationTests(TestCase):
@@ -258,3 +261,43 @@ class NotificationDispatchTests(TestCase):
 
         self.assertEqual(mock_send.call_count, 1)
         self.assertEqual(mock_send.call_args[0][0], 'owner@example.com')
+
+
+class RankingTests(TestCase):
+    def test_low_volume_hot_ranking_prioritizes_newer_posts(self):
+        author = User.objects.create_user(
+            username='author',
+            email='author@example.com',
+            password='author-pass-1234',
+        )
+        now = timezone.now()
+        older = Question.objects.create(
+            title='Older popular post',
+            body='Body',
+            author=author,
+        )
+        newer = Question.objects.create(
+            title='New fresh post',
+            body='Body',
+            author=author,
+        )
+        Question.objects.filter(pk=older.pk).update(created_at=now - timedelta(days=2))
+        Question.objects.filter(pk=newer.pk).update(created_at=now - timedelta(hours=1))
+
+        voters = [
+            User.objects.create_user(
+                username=f'voter-{index}',
+                email=f'voter-{index}@example.com',
+                password='voter-pass-1234',
+            )
+            for index in range(4)
+        ]
+        Vote.objects.bulk_create([Vote(question=older, user=voter) for voter in voters])
+
+        request = RequestFactory().get(reverse('question_list'))
+        request.user = AnonymousUser()
+        with patch('questions.views.render') as mock_render:
+            from .views import question_list
+            question_list(request)
+            ranked = list(mock_render.call_args.args[2]['questions'])
+        self.assertEqual(ranked[0].title, 'New fresh post')
