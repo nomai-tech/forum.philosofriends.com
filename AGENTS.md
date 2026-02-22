@@ -6,6 +6,15 @@ Always deploy using the local Helm chart and values file so persistence, env var
 2) Deploy with:
    `helm upgrade --install forum deploy/web-app -n jon -f deploy/philo-news-values.yaml --set image.name=<image>:<tag> --set ingress.host=forum.philosofriends.com`
 
+## Deployment pitfalls (learned Feb 2026)
+
+- **Image name convention**: use `pdr.jonbesga.com/forum.philosofriends.com:<sha>` — NOT `pdr.jonbesga.com/philosofriends-com:<sha>`.
+- **Always use the local chart and values file** (`deploy/web-app` + `deploy/philo-news-values.yaml`) as documented above. Do NOT use the remote chart URL.
+- **containerPort must be 8000** — Django listens on 8000, not 80. If deploying with overrides, pass `--set containerPort=8000 --set service.targetPort=8000`.
+- **There is a separate `philosofriends-com` Helm release** for `philosofriends.com` (a different site) in the same `jon` namespace. Do NOT touch it when deploying this forum.
+- **Use `uv run python manage.py`** for all Django management commands. The `.venv` is Python 3.14.
+- **Run migrations locally** with `uv run python manage.py migrate` before testing after pulling new code.
+
 ## Current architecture notes (Jan 2026)
 
 ### Database migration
@@ -19,19 +28,6 @@ Always deploy using the local Helm chart and values file so persistence, env var
 - `PASSWORD_HASHER_ITERATIONS` is configurable via env and currently set low for performance testing (value is in Helm values).
 - App resources: requests are low to fit the single-node cluster; limits are higher for burst.
 - PVC for sqlite is disabled (persistence off); Postgres is now the durable store.
-
-### Postgres resources
-- Postgres statefulset in `default` namespace has higher resources than before:
-  - requests: 500m CPU / 1Gi
-  - limits: 1 CPU / 2Gi
-
-### Known fixes/behavior
-- Logout uses a custom GET handler (`/accounts/logout/`) instead of Django’s POST-only LogoutView.
-- Login performance inside Django is fast (<100ms) after rehashing; any remaining slowness likely comes from ingress/network.
-
-### Ops changes made
-- Removed pgAdmin (Helm release + PVC deleted) to free resources.
-- ai-sticker-api (in `ai-stickers` namespace) resources were reduced and replicas scaled to 1 (current live state).
 
 ### Safety / secrets
 - Do not commit passwords or tokens to the repo.
