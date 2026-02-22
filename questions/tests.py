@@ -304,7 +304,7 @@ class RankingTests(TestCase):
 
 
 class SitemapTests(TestCase):
-    def test_sitemap_only_lists_homepage(self):
+    def test_sitemap_lists_homepage_and_updates_with_new_questions(self):
         author = User.objects.create_user(
             username='sitemap-author',
             email='sitemap-author@example.com',
@@ -320,7 +320,7 @@ class SitemapTests(TestCase):
         self.assertEqual(first_response.status_code, 200)
         self.assertEqual(first_response['Content-Type'].split(';')[0], 'application/xml')
         self.assertContains(first_response, reverse('question_list'))
-        self.assertNotContains(first_response, reverse('question_detail_slug', args=[first.slug]))
+        self.assertContains(first_response, reverse('question_detail_slug', args=[first.slug]))
 
         second = Question.objects.create(
             title='Second sitemap question',
@@ -330,5 +330,5 @@ class SitemapTests(TestCase):
 
         second_response = self.client.get('/sitemap.xml')
         self.assertContains(second_response, reverse('question_list'))
-        self.assertNotContains(second_response, reverse('question_detail_slug', args=[first.slug]))
-        self.assertNotContains(second_response, reverse('question_detail_slug', args=[second.slug]))
+        self.assertContains(second_response, reverse('question_detail_slug', args=[first.slug]))
+        self.assertContains(second_response, reverse('question_detail_slug', args=[second.slug]))

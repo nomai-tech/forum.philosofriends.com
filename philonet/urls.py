@@ -19,11 +19,12 @@ from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 
-from questions.sitemaps import HomepageSitemap
+from questions.sitemaps import HomepageSitemap, QuestionSitemap
 
 
 sitemaps = {
     'homepage': HomepageSitemap,
+    'questions': QuestionSitemap,
 }
 
 urlpatterns = [
