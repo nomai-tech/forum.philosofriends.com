@@ -420,7 +420,13 @@ a:hover {
 
 .hn-profile-settings {
     margin-top: 14px;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
+}
+
+.hn-divider {
+    border: none;
+    border-top: 1px solid var(--hn-border);
+    margin: 0 0 24px;
 }
 
 .hn-profile-settings h2 {

@@ -54,6 +54,8 @@
         {% endif %}
     </section>
 
+    {% if is_own_profile %}<hr class="hn-divider">{% endif %}
+
     {% if questions %}
         <ol class="hn-list">
             {% for question in questions %}
