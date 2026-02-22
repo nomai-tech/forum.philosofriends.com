@@ -301,3 +301,32 @@ class RankingTests(TestCase):
             question_list(request)
             ranked = list(mock_render.call_args.args[2]['questions'])
         self.assertEqual(ranked[0].title, 'New fresh post')
+
+
+class SitemapTests(TestCase):
+    def test_sitemap_updates_when_new_question_is_created(self):
+        author = User.objects.create_user(
+            username='sitemap-author',
+            email='sitemap-author@example.com',
+            password='sitemap-pass-1234',
+        )
+        first = Question.objects.create(
+            title='First sitemap question',
+            body='Body',
+            author=author,
+        )
+
+        first_response = self.client.get('/sitemap.xml')
+        self.assertEqual(first_response.status_code, 200)
+        self.assertEqual(first_response['Content-Type'].split(';')[0], 'application/xml')
+        self.assertContains(first_response, reverse('question_detail_slug', args=[first.slug]))
+
+        second = Question.objects.create(
+            title='Second sitemap question',
+            body='Body',
+            author=author,
+        )
+
+        self.assertNotContains(first_response, reverse('question_detail_slug', args=[second.slug]))
+        second_response = self.client.get('/sitemap.xml')
+        self.assertContains(second_response, reverse('question_detail_slug', args=[second.slug]))
