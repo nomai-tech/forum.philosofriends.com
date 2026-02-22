@@ -4,15 +4,16 @@ from django.urls import reverse
 from .models import Question
 
 
-class QuestionSitemap(Sitemap):
+class HomepageSitemap(Sitemap):
     changefreq = "daily"
-    priority = 0.7
+    priority = 1.0
 
     def items(self):
-        return Question.objects.order_by("-created_at")
+        return ["question_list"]
 
     def lastmod(self, obj):
-        return obj.created_at
+        latest_question = Question.objects.order_by("-created_at").only("created_at").first()
+        return latest_question.created_at if latest_question else None
 
     def location(self, obj):
-        return reverse("question_detail_slug", args=[obj.slug])
+        return reverse(obj)
