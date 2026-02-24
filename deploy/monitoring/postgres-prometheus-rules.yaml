@@ -1,0 +1,156 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: postgres-resource-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring
+    app.kubernetes.io/part-of: kube-prometheus-stack
+spec:
+  groups:
+    - name: postgres.default.resources
+      rules:
+        - alert: PostgresPodHighMemoryUsage
+          expr: |
+            (
+              sum by (namespace, pod) (
+                container_memory_working_set_bytes{
+                  namespace="default",
+                  pod=~"postgres-postgresql-.*",
+                  container!="",
+                  container!="POD"
+                }
+              )
+              /
+              clamp_min(
+                sum by (namespace, pod) (
+                  kube_pod_container_resource_limits{
+                    namespace="default",
+                    pod=~"postgres-postgresql-.*",
+                    resource="memory",
+                    unit="byte"
+                  }
+                ),
+                1
+              )
+            ) > 0.90
+            and
+            sum by (namespace, pod) (
+              kube_pod_container_resource_limits{
+                namespace="default",
+                pod=~"postgres-postgresql-.*",
+                resource="memory",
+                unit="byte"
+              }
+            ) > 0
+          for: 10m
+          labels:
+            severity: warning
+            app: postgres
+            namespace: default
+          annotations:
+            summary: Postgres pod memory usage is above 90% of its limit
+            description: Pod {{ $labels.namespace }}/{{ $labels.pod }} has exceeded 90% memory usage for 10 minutes.
+        - alert: PostgresPodCpuThrottlingHigh
+          expr: |
+            (
+              sum by (namespace, pod) (
+                rate(container_cpu_cfs_throttled_periods_total{
+                  namespace="default",
+                  pod=~"postgres-postgresql-.*",
+                  container!="",
+                  container!="POD"
+                }[5m])
+              )
+              /
+              clamp_min(
+                sum by (namespace, pod) (
+                  rate(container_cpu_cfs_periods_total{
+                    namespace="default",
+                    pod=~"postgres-postgresql-.*",
+                    container!="",
+                    container!="POD"
+                  }[5m])
+                ),
+                1
+              )
+            ) > 0.25
+          for: 15m
+          labels:
+            severity: warning
+            app: postgres
+            namespace: default
+          annotations:
+            summary: Postgres pod CPU throttling is high
+            description: Pod {{ $labels.namespace }}/{{ $labels.pod }} is throttled for more than 25% of CPU periods over 15 minutes.
+        - alert: PostgresContainerOOMKilled
+          expr: |
+            (
+              increase(kube_pod_container_status_restarts_total{
+                namespace="default",
+                pod=~"postgres-postgresql-.*"
+              }[10m]) > 0
+            )
+            and on (namespace, pod, container)
+            (
+              kube_pod_container_status_last_terminated_reason{
+                namespace="default",
+                pod=~"postgres-postgresql-.*",
+                reason="OOMKilled"
+              } == 1
+            )
+          for: 1m
+          labels:
+            severity: critical
+            app: postgres
+            namespace: default
+          annotations:
+            summary: Postgres container was OOMKilled
+            description: Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} restarted after OOMKilled.
+        - alert: PostgresPodNotReady
+          expr: |
+            max by (namespace, pod) (
+              kube_pod_status_ready{
+                namespace="default",
+                pod=~"postgres-postgresql-.*",
+                condition="true"
+              }
+            ) == 0
+          for: 5m
+          labels:
+            severity: critical
+            app: postgres
+            namespace: default
+          annotations:
+            summary: Postgres pod is not ready
+            description: Pod {{ $labels.namespace }}/{{ $labels.pod }} has been NotReady for 5 minutes.
+        - alert: PostgresStatefulSetReplicasNotReady
+          expr: |
+            kube_statefulset_status_replicas_ready{
+              namespace="default",
+              statefulset="postgres-postgresql"
+            } < 1
+          for: 5m
+          labels:
+            severity: critical
+            app: postgres
+            namespace: default
+          annotations:
+            summary: Postgres StatefulSet has no ready replicas
+            description: StatefulSet default/postgres-postgresql has fewer than 1 ready replicas for 5 minutes.
+        - alert: PostgresRestartRateHigh
+          expr: |
+            sum by (namespace, pod) (
+              increase(kube_pod_container_status_restarts_total{
+                namespace="default",
+                pod=~"postgres-postgresql-.*"
+              }[15m])
+            ) >= 2
+          for: 1m
+          labels:
+            severity: warning
+            app: postgres
+            namespace: default
+          annotations:
+            summary: Postgres pod restarted multiple times
+            description: Pod {{ $labels.namespace }}/{{ $labels.pod }} restarted at least 2 times in 15 minutes.
