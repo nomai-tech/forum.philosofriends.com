@@ -1,0 +1,109 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: forum-resource-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring
+    app.kubernetes.io/part-of: kube-prometheus-stack
+spec:
+  groups:
+    - name: forum.philosofriends.com.resources
+      rules:
+        - alert: ForumPodHighMemoryUsage
+          expr: |
+            (
+              sum by (namespace, pod) (
+                container_memory_working_set_bytes{
+                  namespace="jon",
+                  pod=~"forum-.*",
+                  container!="",
+                  container!="POD"
+                }
+              )
+              /
+              clamp_min(
+                sum by (namespace, pod) (
+                  kube_pod_container_resource_limits{
+                    namespace="jon",
+                    pod=~"forum-.*",
+                    resource="memory",
+                    unit="byte"
+                  }
+                ),
+                1
+              )
+            ) > 0.90
+            and
+            sum by (namespace, pod) (
+              kube_pod_container_resource_limits{
+                namespace="jon",
+                pod=~"forum-.*",
+                resource="memory",
+                unit="byte"
+              }
+            ) > 0
+          for: 10m
+          labels:
+            severity: warning
+            app: forum
+            namespace: jon
+          annotations:
+            summary: Forum pod memory usage is above 90% of its limit
+            description: Pod {{ $labels.namespace }}/{{ $labels.pod }} has exceeded 90% memory usage for 10 minutes.
+        - alert: ForumPodCpuThrottlingHigh
+          expr: |
+            (
+              sum by (namespace, pod) (
+                rate(container_cpu_cfs_throttled_periods_total{
+                  namespace="jon",
+                  pod=~"forum-.*",
+                  container!="",
+                  container!="POD"
+                }[5m])
+              )
+              /
+              clamp_min(
+                sum by (namespace, pod) (
+                  rate(container_cpu_cfs_periods_total{
+                    namespace="jon",
+                    pod=~"forum-.*",
+                    container!="",
+                    container!="POD"
+                  }[5m])
+                ),
+                1
+              )
+            ) > 0.25
+          for: 15m
+          labels:
+            severity: warning
+            app: forum
+            namespace: jon
+          annotations:
+            summary: Forum pod CPU throttling is high
+            description: Pod {{ $labels.namespace }}/{{ $labels.pod }} is throttled for more than 25% of CPU periods over 15 minutes.
+        - alert: ForumContainerOOMKilled
+          expr: |
+            (
+              increase(kube_pod_container_status_restarts_total{
+                namespace="jon",
+                pod=~"forum-.*"
+              }[10m]) > 0
+            )
+            and on (namespace, pod, container)
+            (
+              kube_pod_container_status_last_terminated_reason{
+                namespace="jon",
+                pod=~"forum-.*",
+                reason="OOMKilled"
+              } == 1
+            )
+          for: 1m
+          labels:
+            severity: critical
+            app: forum
+            namespace: jon
+          annotations:
+            summary: Forum container was OOMKilled
+            description: Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} restarted after OOMKilled.
