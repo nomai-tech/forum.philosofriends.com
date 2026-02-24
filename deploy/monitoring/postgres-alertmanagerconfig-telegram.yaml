@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: postgres-telegram
+  namespace: default
+  labels:
+    release: monitoring
+    app.kubernetes.io/part-of: kube-prometheus-stack
+spec:
+  route:
+    receiver: postgres-telegram
+    groupBy:
+      - alertname
+      - pod
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    matchers:
+      - name: app
+        matchType: "="
+        value: postgres
+  receivers:
+    - name: postgres-telegram
+      telegramConfigs:
+        - botToken:
+            name: postgres-telegram-alerts
+            key: bot_token
+          chatID: -1003003060205
+          parseMode: HTML
+          sendResolved: true
