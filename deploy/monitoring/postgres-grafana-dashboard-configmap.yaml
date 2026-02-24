@@ -1,0 +1,519 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-grafana-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+data:
+  postgres-app-monitoring.json: |-
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 1
+                  },
+                  {
+                    "color": "red",
+                    "value": 2
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 6,
+            "x": 0,
+            "y": 0
+          },
+          "id": 1,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "value"
+          },
+          "targets": [
+            {
+              "expr": "count(ALERTS{app=\"postgres\", namespace=\"default\", alertstate=~\"pending|firing\"})",
+              "refId": "A"
+            }
+          ],
+          "title": "Postgres Alerts (Pending/Firing)",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "0": {
+                      "text": "Not Ready"
+                    },
+                    "1": {
+                      "text": "Ready"
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 6,
+            "x": 6,
+            "y": 0
+          },
+          "id": 2,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "value"
+          },
+          "targets": [
+            {
+              "expr": "max(kube_pod_status_ready{namespace=\"default\", pod=~\"postgres-postgresql-.*\", condition=\"true\"})",
+              "refId": "A"
+            }
+          ],
+          "title": "Postgres Pod Ready",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 6,
+            "x": 12,
+            "y": 0
+          },
+          "id": 3,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "value"
+          },
+          "targets": [
+            {
+              "expr": "kube_statefulset_status_replicas_ready{namespace=\"default\", statefulset=\"postgres-postgresql\"}",
+              "refId": "A"
+            }
+          ],
+          "title": "StatefulSet Ready Replicas",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "color": {
+                "mode": "thresholds"
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 6,
+            "x": 18,
+            "y": 0
+          },
+          "id": 4,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "value"
+          },
+          "targets": [
+            {
+              "expr": "kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=\"default\", persistentvolumeclaim=\"data-postgres-postgresql-0\"}",
+              "refId": "A"
+            }
+          ],
+          "title": "PVC Requested Size",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 24,
+            "x": 0,
+            "y": 5
+          },
+          "id": 5,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "expr": "ALERTS{app=\"postgres\", namespace=\"default\"}",
+              "legendFormat": "{{alertname}} ({{alertstate}})",
+              "refId": "A"
+            }
+          ],
+          "title": "Postgres Alert States",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "cores",
+              "color": {
+                "mode": "palette-classic"
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 10
+          },
+          "id": 6,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"default\", pod=~\"postgres-postgresql-.*\", container!=\"\", container!=\"POD\"}[5m]))",
+              "legendFormat": "{{pod}}",
+              "refId": "A"
+            }
+          ],
+          "title": "CPU Usage (cores)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "min": 0,
+              "max": 100,
+              "color": {
+                "mode": "palette-classic"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 80
+                  },
+                  {
+                    "color": "red",
+                    "value": 90
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 10
+          },
+          "id": 7,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "expr": "100 * ((sum by (pod) (container_memory_working_set_bytes{namespace=\"default\", pod=~\"postgres-postgresql-.*\", container!=\"\", container!=\"POD\"})) / clamp_min(sum by (pod) (kube_pod_container_resource_limits{namespace=\"default\", pod=~\"postgres-postgresql-.*\", resource=\"memory\", unit=\"byte\"}), 1))",
+              "legendFormat": "{{pod}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Memory Usage % of Limit",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "decmbytes",
+              "color": {
+                "mode": "palette-classic"
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 18
+          },
+          "id": 8,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"default\", pod=~\"postgres-postgresql-.*\", container!=\"\", container!=\"POD\"})",
+              "legendFormat": "{{pod}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Memory Working Set",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "min": 0,
+              "max": 100,
+              "color": {
+                "mode": "palette-classic"
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 18
+          },
+          "id": 9,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "expr": "100 * ((sum by (pod) (rate(container_cpu_cfs_throttled_periods_total{namespace=\"default\", pod=~\"postgres-postgresql-.*\", container!=\"\", container!=\"POD\"}[5m]))) / clamp_min(sum by (pod) (rate(container_cpu_cfs_periods_total{namespace=\"default\", pod=~\"postgres-postgresql-.*\", container!=\"\", container!=\"POD\"}[5m])), 1))",
+              "legendFormat": "{{pod}}",
+              "refId": "A"
+            }
+          ],
+          "title": "CPU Throttling %",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "color": {
+                "mode": "palette-classic"
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 26
+          },
+          "id": 10,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "expr": "sum by (pod, container) (increase(kube_pod_container_status_restarts_total{namespace=\"default\", pod=~\"postgres-postgresql-.*\"}[24h]))",
+              "legendFormat": "{{pod}} / {{container}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Container Restarts (24h increase)",
+          "type": "timeseries"
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "style": "dark",
+      "tags": [
+        "postgres",
+        "kubernetes",
+        "prometheus"
+      ],
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "",
+      "title": "Postgres Monitoring",
+      "uid": "postgres-k8s-monitor",
+      "version": 1,
+      "weekStart": ""
+    }
