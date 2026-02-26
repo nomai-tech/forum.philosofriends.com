@@ -263,8 +263,8 @@ class NotificationDispatchTests(TestCase):
         self.assertEqual(mock_send.call_args[0][0], 'owner@example.com')
 
 
-class RankingTests(TestCase):
-    def test_low_volume_hot_ranking_prioritizes_newer_posts(self):
+class QuestionListOrderingTests(TestCase):
+    def test_default_question_list_orders_by_latest(self):
         author = User.objects.create_user(
             username='author',
             email='author@example.com',
@@ -284,23 +284,13 @@ class RankingTests(TestCase):
         Question.objects.filter(pk=older.pk).update(created_at=now - timedelta(days=2))
         Question.objects.filter(pk=newer.pk).update(created_at=now - timedelta(hours=1))
 
-        voters = [
-            User.objects.create_user(
-                username=f'voter-{index}',
-                email=f'voter-{index}@example.com',
-                password='voter-pass-1234',
-            )
-            for index in range(4)
-        ]
-        Vote.objects.bulk_create([Vote(question=older, user=voter) for voter in voters])
-
         request = RequestFactory().get(reverse('question_list'))
         request.user = AnonymousUser()
         with patch('questions.views.render') as mock_render:
             from .views import question_list
             question_list(request)
-            ranked = list(mock_render.call_args.args[2]['questions'])
-        self.assertEqual(ranked[0].title, 'New fresh post')
+            ordered = list(mock_render.call_args.args[2]['questions'])
+        self.assertEqual(ordered[0].title, 'New fresh post')
 
 
 class SitemapTests(TestCase):
