@@ -7,7 +7,7 @@ image:
 containerPort: 8000
 
 service:
-  targetPort: 8080
+  targetPort: 8000
 
 env:
   - name: DEBUG
@@ -18,9 +18,9 @@ env:
         name: forum-django
         key: SECRET_KEY
   - name: ALLOWED_HOSTS
-    value: forum.philosofriends.com
+    value: forum.philosofriends.com,philosofriends.com
   - name: CSRF_TRUSTED_ORIGINS
-    value: https://forum.philosofriends.com,http://forum.philosofriends.com
+    value: https://forum.philosofriends.com,http://forum.philosofriends.com,https://philosofriends.com,http://philosofriends.com
   - name: POSTGRES_HOST
     value: postgres-postgresql.default.svc.cluster.local
   - name: POSTGRES_PORT
@@ -35,7 +35,7 @@ env:
         name: forum-postgres
         key: POSTGRES_PASSWORD
   - name: SITE_URL
-    value: https://forum.philosofriends.com
+    value: https://philosofriends.com
   - name: EMAIL_NOTIFICATIONS_ENABLED
     value: "true"
   - name: SMTP2GO_FROM_EMAIL
@@ -66,6 +66,18 @@ args:
 
 persistence:
   enabled: false
+
+ingress:
+  className: traefik
+  hosts:
+    - host: forum.philosofriends.com
+      paths:
+        - path: /
+          pathType: Prefix
+    - host: philosofriends.com
+      paths:
+        - path: /
+          pathType: Prefix
 
 nginx:
   enabled: true
