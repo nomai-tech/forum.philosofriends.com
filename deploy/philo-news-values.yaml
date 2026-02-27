@@ -51,8 +51,8 @@ resources:
     cpu: 100m
     memory: 256Mi
   limits:
-    cpu: "2"
-    memory: 2Gi
+    cpu: 1500m
+    memory: 1536Mi
 
 command:
   - /app/entrypoint.sh
