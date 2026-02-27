@@ -33,7 +33,8 @@ helm upgrade --install forum deploy/web-app \
   -n jon \
   -f deploy/philo-news-values.yaml \
   --set image.name=<image>:<tag> \
-  --set ingress.host=forum.philosofriends.com
+  --set containerPort=8000 \
+  --set service.targetPort=8000
 ```
 
 ## Notes

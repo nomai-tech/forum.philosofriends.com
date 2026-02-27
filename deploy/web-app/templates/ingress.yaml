@@ -18,12 +18,16 @@ spec:
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
   rules:
-    {{- $hosts := .Values.ingress.hosts -}}
-    {{- if .Values.ingress.host -}}
-    {{- $hosts = list (dict "host" .Values.ingress.host "paths" (list (dict "path" "/" "pathType" "Prefix"))) -}}
-    {{- end }}
-    {{- range $hosts }}
-    - host: {{ required "ingress.host is required" .host }}
+    {{ $hosts := .Values.ingress.hosts | default (list) }}
+    {{ if .Values.ingress.host }}
+    {{ $hosts = append $hosts (dict "host" .Values.ingress.host "paths" (list (dict "path" "/" "pathType" "Prefix"))) }}
+    {{ end }}
+    {{ $seenHosts := dict }}
+    {{ range $hosts }}
+    {{ $host := required "ingress host is required" .host }}
+    {{ if not (hasKey $seenHosts $host) }}
+    {{ $_ := set $seenHosts $host true }}
+    - host: {{ $host }}
       http:
         paths:
           {{- range .paths }}
@@ -35,7 +39,8 @@ spec:
                 port:
                   name: http
           {{- end }}
-    {{- end }}
+    {{ end }}
+    {{ end }}
   {{- with .Values.ingress.tls }}
   tls:
     {{- toYaml . | nindent 4 }}
